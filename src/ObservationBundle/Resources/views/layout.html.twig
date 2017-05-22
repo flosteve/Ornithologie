@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {# Création des block title, link(liens cdn de fichier css), stylesheets( contenant les balises style) #}
     <title>{% block title %}Nos amis les oiseaux{% endblock %}</title>
+    <link rel="icon" href="{{ asset('bundles/observation/images/icones/logo_header_noir.png') }}">
     {% block link %}{% include 'ObservationBundle:Default:link.html.twig' %}{% endblock %}
     {% block stylesheet %}{% include 'ObservationBundle:Default:stylesheet.html.twig' %}{% endblock %}
 </head>
