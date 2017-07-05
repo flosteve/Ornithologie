@@ -12,14 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Bird
 {
+
     /**
-     * @ORM\OneToOne(targetEntity="ObservationBundle\Entity\Fiche")
+     * @ORM\OneToOne(targetEntity="ObservationBundle\Entity\Fiche", inversedBy="bird", cascade={"persist"})
      */
     protected $fiche;
-    /**
-     * @ORM\OneToOne(targetEntity="ObservationBundle\Entity\Sound")
-     */
-    protected $sound;
     /**
      * @var int
      *
@@ -122,7 +119,6 @@ class Bird
      * @ORM\ManyToMany(targetEntity="ObservationBundle\Entity\Location", inversedBy="birds", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
-
     private $locations;
     /**
      * @ORM\OneToMany(targetEntity="ObservationBundle\Entity\Observation", mappedBy="bird")
@@ -130,10 +126,37 @@ class Bird
      */
     private $observations;
     /**
-     * @ORM\OneToMany(targetEntity="ObservationBundle\Entity\Picture", mappedBy="bird")
+     * @ORM\OneToMany(targetEntity="ObservationBundle\Entity\Picture", mappedBy="bird", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $pictures;
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255)
+     */
+    private $typeBec;
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $bec;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="plumage", type="string", length=255)
+     */
+    private $plumage;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="patte", type="string", length=255)
+     */
+    private $patte;
+    /**
+     * @ORM\OneToOne(targetEntity="ObservationBundle\Entity\Picture", cascade={"persist"})
+     */
+    private $avatar;
 
     /**
      * Constructor
@@ -621,9 +644,9 @@ class Bird
         return $this;
     }
 
-    function __toString()
+    public function __toString()
     {
-        return $this->nomVern == '' ? $this->lbNom : $this->getNomVern();
+        return ($this->nomVern == null ? ''  : $this->nomVern . ' ' ) .   $this->lbNom ;
     }
 
     /**
@@ -651,26 +674,122 @@ class Bird
     }
 
     /**
-     * Get sound
+     * Get bec
      *
-     * @return \ObservationBundle\Entity\Sound
+     * @return string
      */
-    public function getSound()
+    public function getBec()
     {
-        return $this->sound;
+        return $this->bec;
     }
 
     /**
-     * Set sound
+     * Set bec
      *
-     * @param \ObservationBundle\Entity\Sound $sound
+     * @param string $bec
      *
      * @return Bird
      */
-    public function setSound(\ObservationBundle\Entity\Sound $sound = null)
+    public function setBec($bec)
     {
-        $this->sound = $sound;
+        $this->bec = $bec;
 
         return $this;
+    }
+
+    /**
+     * Get plumage
+     *
+     * @return string
+     */
+    public function getPlumage()
+    {
+        return $this->plumage;
+    }
+
+    /**
+     * Set plumage
+     *
+     * @param string $plumage
+     *
+     * @return Bird
+     */
+    public function setPlumage($plumage)
+    {
+        $this->plumage = $plumage;
+
+        return $this;
+    }
+
+    /**
+     * Get patte
+     *
+     * @return string
+     */
+    public function getPatte()
+    {
+        return $this->patte;
+    }
+
+    /**
+     * Set patte
+     *
+     * @param string $patte
+     *
+     * @return Bird
+     */
+    public function setPatte($patte)
+    {
+        $this->patte = $patte;
+
+        return $this;
+    }
+
+    /**
+     * Set typeBec
+     *
+     * @param string $typeBec
+     *
+     * @return Bird
+     */
+    public function setTypeBec($typeBec)
+    {
+        $this->typeBec = $typeBec;
+
+        return $this;
+    }
+
+    /**
+     * Get typeBec
+     *
+     * @return string
+     */
+    public function getTypeBec()
+    {
+        return $this->typeBec;
+    }
+
+    /**
+     * Set avatar
+     *
+     * @param \ObservationBundle\Entity\Picture $avatar
+     *
+     * @return Bird
+     */
+    public function setAvatar(\ObservationBundle\Entity\Picture $avatar = null)
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    /**
+     * Get avatar
+     *
+     * @return \ObservationBundle\Entity\Picture
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
     }
 }

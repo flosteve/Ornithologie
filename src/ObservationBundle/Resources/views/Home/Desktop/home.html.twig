@@ -1,0 +1,81 @@
+{% extends 'ObservationBundle::layout.desktop.html.twig' %}
+{# Definition des variables pour le referencement#}
+{% set metadescription = "NAO l'application web d'observation des oiseaux, contribuez à la préservation de la biodiversité. Protection des oiseaux, photographie naturaliste, ornithologie" %}
+{% set ogtitle = "Accueil" %}
+{% set ogurl= 'https://nao.site-projet.fr' %}
+
+{% block  title %}Accueil{% endblock %}
+
+{% block link %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/observation/css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div id="contentHome">
+        <div id="homePicture">
+            <div class="text-center">
+                {# utilisation d'une balise a avec une ancre #}
+                <a href="#bienvenue" id="start" class="btn btn-start-mobile ">COMMENCER L'OBSERVATION<br/>
+                    <span class="glyphicon glyphicon-chevron-down
+    " aria-hidden="true"></span>
+                </a>
+            </div>
+        </div>
+        <div id="second-part">
+            {#Zone de présentation du site #}
+            <div id="bienvenue" class="center-80">
+                <h1>Bienvenue</h1>
+                <p>Bienvenue sur l'application participative de L'association Nos amis les oiseaux.<br/>Vous pourrez
+                    nous faire part de vos observations sur le terrain ou approfondir vos connaissances en ornithologie
+                    à l'aide de fiches détaillés sur nos amis les oiseaux</p>
+                <a class="btn btn-nao" href="{{ path('blog_view') }}" role="button">DECOUVRIR L'ASSOCIATION</a>
+                <a class="btn btn-nao" href="{{ path('bird_map_list') }}" role="button">DECOUVRIR LES OISEAUX PROCHE DE CHEZ VOUS</a>
+            </div>
+            {# Galeery des photos d'oiseaux#}
+            <div id="gallery" class="center-80">
+                <div class="row">
+                    <h1 class="col-md-9">Les dernières photos</h1>
+                    <a id="link-gallery" href="{{ path('gallerie') }}" class="col-md-3 text-center link-desktop">
+                        <img id="img-gallery" src="{{ asset('bundles/observation/images/icones/importPhoto_icon.png') }}" alt="galerie" class="img-responsive">
+                    </a>
+                </div>
+                <div id="list-gallery" class="row">
+                    {% for picture in gallery %}
+                        <div class="col-md-3 col-xs-6">
+                            <img src="{{ asset('uploads/images/bird/' ~picture.url) }}" alt="image issue de la gallerie">
+                        </div>
+                    {% else %}
+                        <p>Prochainement les dernières photos</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+            {#block de saisie obs et newsletter#}
+            <div id="actions" class="row">
+                <div id="saisie" class="text-center col-md-6">
+                    <a class="content-action" href="{{ path ('observation_add') }}"><img
+                                src="{{ asset ('bundles/observation/images/icones/observation_icon.png') }}"
+                                alt="observation_icon">
+                        <p>
+                            SAISIR UNE OBSERVATION
+                        </p>
+                    </a>
+                </div>
+                <div id="newsletter" class="col-md-6">
+                    <form action="{{ path('newsletter_subscribed') }}" class="content-action" method="post">
+                        <input type="email" name="email" placeholder="Renseigner votre email"
+                               class="form-control text-center">
+                        <button type="submit" class="btn btn-nao-2 btn-block">RECEVOIR LA NEWSLETTER</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset('bundles/observation/js/home.js') }}"></script>
+{% endblock %}

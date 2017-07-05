@@ -1,0 +1,30 @@
+{% extends '@Observation/layout.desktop.html.twig' %}
+
+{# Definition des variables pour le referencement#}
+{% set meta-description = "Toute l'actualité de l'association Nos Amis les Oiseaux. Restez informés sur nos actions et sur l'étude . NAO l'application web d'observation des oiseaux, contribuez à la préservation de la biodiversité" %}
+{% set og-title = "L'association" %}
+{% set og-url= url('blog_view') %}
+
+{% block title %}L'association{% endblock %}
+{% block link %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/observation/css/blog.css') }}">
+{% endblock %}
+
+{% block content %}
+
+    <div id="billets" class="center-80">
+        {% for content in contents %}
+            <div class="billet">
+                {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+                <a href="{{ path('billet_edit', {'id': content.id}) }}" class="btn btn-nao edit"><i
+                class="fa fa-pencil"></i></a>
+                {% endif %}
+                {{ content.content|rawdescr }}
+            </div>
+        {% endfor %}
+    </div>
+    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+        <a href="{{ path('billet_create') }}" class="btn btn-nao">Ajouté un billet</a>
+    {% endif %}
+{% endblock %}

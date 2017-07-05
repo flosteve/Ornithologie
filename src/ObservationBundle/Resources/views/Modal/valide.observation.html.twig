@@ -1,0 +1,21 @@
+<div id="valide_observation_{{ observation.id }}" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                <h3 class="text-center">Validation de l'observation {{ observation.id }}</h3>
+                <p class="explain">
+                    Oiseau : {{ observation.bird.nomVern }}</br>
+                    date : {{ observation.seeAt |date('d/m/y') }}</br>
+                    Quantité : {{ observation.quantity }}</br>
+                    Lieu : {{ observation.location.lieu }}</br>
+                </p>
+                <p class="confirm text-center">
+                    Etes vous sur ?
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                    <a href="{{ path('observation_validate', {'id': observation.id}) }}" class="btn btn-primary">Oui</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

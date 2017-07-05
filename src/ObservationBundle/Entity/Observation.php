@@ -59,7 +59,7 @@ class Observation
     private $validated = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ObservationBundle\Entity\Bird", inversedBy="observations")
+     * @ORM\ManyToOne(targetEntity="ObservationBundle\Entity\Bird", inversedBy="observations", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $bird;
@@ -68,7 +68,6 @@ class Observation
      * @var string
      *
      * @ORM\OneToMany(targetEntity="ObservationBundle\Entity\Picture", mappedBy="observation", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
      */
     private $pictures;
 
@@ -106,7 +105,9 @@ class Observation
      */
     public function __construct()
     {
+
         $this->pictures = new \Doctrine\Common\Collections\ArrayCollection();
+//        $this->pictures_2 = new \Doctrine\Common\Collections\ArrayCollection();
         $this->postedAt = new \DateTime();
     }
 
@@ -329,7 +330,7 @@ class Observation
      *
      * @return Observation
      */
-    public function setValidatedBy(\ObservationBundle\Entity\User $validatedBy)
+    public function setValidatedBy(\ObservationBundle\Entity\User $validatedBy = null)
     {
         $this->validatedBy = $validatedBy;
 
@@ -359,6 +360,7 @@ class Observation
 
         return $this;
     }
+
 
     /**
      * Add picture

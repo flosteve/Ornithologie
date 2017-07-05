@@ -1,0 +1,254 @@
+/*
+    Home page
+     */
+
+#bienvenue {
+    padding-top: 50px;
+}
+#gallery, #actions {
+
+    padding-top: 40px;
+}
+/* Le contenue suivant la photo d'acceuil fait au minimum 80% de l'écran pour assuere le scroll*/
+#second-part{
+    min-height: 80vh;
+    padding-top: 50px;
+}
+/*---- Style sur l'opacité du pbloc action -----*/
+
+#newsletter {
+    background: url('../images/Visuels/encartNewsletter_background.jpg') no-repeat center;
+    -webkit-background-size: cover;
+    height: 200px;
+    position: relative;
+}
+#saisie {
+    background: url('../images/Visuels/encartObservation_background.jpg') no-repeat center;
+    -webkit-background-size: cover;
+    height: 200px;
+    position: relative;
+}
+.content-action{
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    padding: 10px;
+}
+/*---- fin du style sur l'opacité du pbloc action -----*/
+/*Partie observation et newsletter
+ */
+
+#actions {
+    margin-bottom: 60px;
+}
+
+#link-gallery>#img-gallery{
+    height: 40px;
+}
+
+#gallery #list-gallery img, #picBird img {
+    margin: 10px auto;
+    min-height: 200px;
+    height: 200px;
+    width: 100%;
+}
+
+#saisie p {
+    color: white;
+    font-size: large;
+}
+
+#saisie a:hover {
+
+    text-decoration: none;
+}
+
+#saisie p:hover {
+    color: #333333;
+}
+
+.obs-mobile {
+
+    margin-bottom: 15px;
+}
+
+
+#newsletter .form-control, #newsletter button {
+
+    border-radius: 0;
+}
+
+#homePicture{
+    position: relative;
+}
+@media (max-width: 992px) {
+    /* On reduit le margin bottom pour collé à la navbar*/
+    #view{
+        margin-bottom: 40px;
+    }
+    #homePicture {
+        background: url('../images/Visuels/accueil_background.jpg') no-repeat center;
+        -webkit-background-size: cover;
+        /* Hauteur de l'écran moins les deux navbars */
+        height: calc(100vh - 80px);
+    }
+
+    #start {
+        top: calc(100vh - 140px) !important;
+    }
+    #bienvenue{
+        padding-top: 30px;
+    }
+    #bienvenue a.btn{
+        margin-top: 10px;
+    }
+    .images {
+        margin-bottom: 10px;
+    }
+    #actions>div{
+        height: 150px;
+    }
+    /*
+Social links
+stylisation des buttons
+ */
+
+    #sociallink {
+        margin-bottom: 20px;
+    }
+
+    #sociallink ul {
+        display: flex;
+        list-style: none;
+        justify-content: space-between;
+    }
+
+    #sociallink>div{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        height: 100px;
+    }
+    .logo-sociaux, .logo-sociaux>a{
+        height: 100%;
+        padding: 0;
+    }
+    .logo-sociaux>a{
+        width: 100px;
+    }
+}
+
+/* Style special pour la navbar */
+.navbar-transparent {
+    background-color: transparent;
+    background: linear-gradient(to bottom,#000 0,rgba(255,255,255,0) 100%);
+}
+.navbar-transparent>#first{
+    background: transparent;
+}
+.navbar-transparent>.tab-content{
+    background: transparent;
+}
+.navbar-transparent .first_line.active>a{
+    color: #99d1c8;
+}
+
+/*Style sur le div principal de la page
+    Afin d'occupé toute l'hauteur de la fenetre
+*/
+@media (min-width: 993px) {
+    #homePicture {
+
+        background: url('../images/Visuels/accueil_background.jpg') no-repeat center;
+        -webkit-background-size: cover;
+        /* Hauteur de l'écran */
+        height: 100vh;
+    }
+
+    #bienvenue a{
+        width: 40%;
+    }
+
+    #sociallinks {
+        margin-bottom: 80px;
+    }
+
+    #sociallinks a {
+        width: 100px;
+    }
+    .navbar-transparent .second_line>a{
+        color: white;
+    }
+}
+
+/* Positionnement du bouton sur le bas du div */
+#start {
+    position: absolute;
+    background-color: transparent;
+    color: white;
+    top: calc(100vh - 90px);
+    left:0;
+    right: 0;
+}
+
+
+/* Partie Bienvenue
+ */
+
+#bienvenue p {
+    min-height: 80px;
+    margin-top: 20px;
+}
+/*
+Gallerie de photos
+ */
+
+#gallery {
+    margin-bottom: 10px;
+}
+
+.link-desktop {
+    padding-top: 40px;
+    text-decoration: underline;
+    color: black;
+}
+
+.link-mobile {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-decoration: underline;
+    color: black;
+}
+
+#gallery p {
+    margin-top: 50px;
+}
+
+#carousel {
+
+}
+#contentHome{
+    height:100%;
+}
+#contentHome>#second-part{
+    height: calc(100% - 100vh);
+}
+
+
+
+
+
+
+
+
+
+
+

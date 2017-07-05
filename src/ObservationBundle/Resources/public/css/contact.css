@@ -1,0 +1,10 @@
+@media (min-width: 993px) {
+    input[type="text"].form-control, input[type="email"].form-control {
+        width: 300px;
+    }
+}
+@media (max-width: 992px ) {
+    button#message_save{
+        margin-bottom: 10px;
+    }
+}

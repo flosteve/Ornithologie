@@ -4,6 +4,8 @@ namespace ObservationBundle\Repository;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use ObservationBundle\Entity\Bird;
+use ObservationBundle\Entity\User;
+
 /**
  * ObservationRepository
  *
@@ -46,10 +48,20 @@ class ObservationRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('bird', $bird)
             ->orderBy('o.postedAt', 'DESC')
             ->getQuery();
-        $query->setFirstResult(($page-1) * $limit)
+        $query->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit);
 
         return new Paginator($query, true);
+    }
+
+    public function findForValidate(User $user)
+    {
+        $query = $this->createQueryBuilder('o')
+            ->where('o.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('o.validated = true');
+
+        return $query->getQuery()->getResult();
     }
 
 }

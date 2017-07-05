@@ -4,6 +4,9 @@
 namespace ObservationBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use ObservationBundle\Validator\Constraints as ObsAssert;
 
 /**
  * Class Fiche
@@ -11,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="fiche")
  * @ORM\Entity(repositoryClass="ObservationBundle\Repository\FicheRepository")
+ * @ObsAssert\Fiche
  */
 class Fiche
 {
@@ -34,12 +38,19 @@ class Fiche
     /**
      * @ORM\Column(type="text")
      */
-    protected $descritpion;
+    protected $description;
 
     /**
      * @ORM\Column(type="text")
      */
     protected $status;
+
+    /**
+     * @ORM\OneToOne(targetEntity="ObservationBundle\Entity\Bird", mappedBy="fiche", cascade={"persist"})
+     * @ORM\JoinColumn(name="bird", referencedColumnName="id")
+     */
+    protected $bird;
+
 
 
     /**
@@ -101,30 +112,6 @@ class Fiche
     }
 
     /**
-     * Get descritpion
-     *
-     * @return string
-     */
-    public function getDescritpion()
-    {
-        return $this->descritpion;
-    }
-
-    /**
-     * Set descritpion
-     *
-     * @param string $descritpion
-     *
-     * @return Fiche
-     */
-    public function setDescritpion($descritpion)
-    {
-        $this->descritpion = $descritpion;
-
-        return $this;
-    }
-
-    /**
      * Get status
      *
      * @return string
@@ -144,6 +131,54 @@ class Fiche
     public function setStatus($status)
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Fiche
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get bird
+     *
+     * @return \ObservationBundle\Entity\Bird
+     */
+    public function getBird()
+    {
+        return $this->bird;
+    }
+
+    /**
+     * Set bird
+     *
+     * @param \ObservationBundle\Entity\Bird $bird
+     *
+     * @return Fiche
+     */
+    public function setBird(\ObservationBundle\Entity\Bird $bird = null)
+    {
+        $this->bird = $bird;
 
         return $this;
     }

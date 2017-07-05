@@ -1,0 +1,44 @@
+
+.user {
+    background-color: #dbefed;
+    margin: 10px auto;
+    width: 80%;
+    height: 100px;
+}
+
+.user > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /*height: calc(100px * 0.9);*/
+    /*margin-top: calc(100px * 0.05);*/
+    /*text-align: center;*/
+    border: 0;
+    border-right: 1px solid #fbfbfb;
+}
+
+.user small {
+    color: white;
+}
+
+.user > div > div.row > div {
+    padding: 0;
+    padding-left: 3px;
+}
+
+@media (max-width: 993px) {
+    .user {
+        width: auto;
+        height: auto;
+    }
+
+    .user > div {
+        height: auto;
+        height: auto;
+    }
+}
+
+/*--- Style modal ----*/
+
