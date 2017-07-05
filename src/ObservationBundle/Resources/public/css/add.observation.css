@@ -1,0 +1,17 @@
+@media ( max-width: 767px){
+    #picture-input>.col-xs-6{
+        margin: 0;
+        padding: 0;
+    }
+}
+
+@media (max-width: 1024px) {
+
+    /* On reduit le padding bottom pour collé à la navbar*/
+    #view{
+        padding-bottom: 40px;
+    }
+}
+#contentAdd{
+    width: 80% !important;
+}

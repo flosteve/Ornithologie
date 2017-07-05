@@ -4,6 +4,7 @@ namespace ObservationBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Picture
@@ -14,6 +15,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class Picture
 {
+    /**
+     * @var Assert\Image
+     */
     protected $file;
     protected $tempFileName;
     /**
@@ -28,6 +32,7 @@ class Picture
      * @var string
      *
      * @ORM\Column(name="url", type="string", length=255)
+     * @Assert\Image()
      */
     private $url;
     /**
@@ -41,9 +46,11 @@ class Picture
      */
     private $bird;
     /**
-     * @ORM\ManyToOne(targetEntity="ObservationBundle\Entity\Observation", inversedBy="pictures")
+     * @ORM\ManyToOne(targetEntity="ObservationBundle\Entity\Observation", inversedBy="files")
      */
     private $observation;
+
+
     /**
      * @ORM\OneToOne(targetEntity="ObservationBundle\Entity\User", mappedBy="avatar")
      */
@@ -127,7 +134,6 @@ class Picture
     public function setBird(\ObservationBundle\Entity\Bird $bird = null)
     {
         $this->bird = $bird;
-
         return $this;
     }
 
@@ -184,6 +190,11 @@ class Picture
         return $this->file;
     }
 
+    /**
+     * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
+     *
+     * @return Picture
+     */
     public function setFile(UploadedFile $file)
     {
         $this->file = $file;
@@ -260,4 +271,5 @@ class Picture
     {
         return $this->getUploadDir(). '/'.  $this->url;
     }
+
 }

@@ -48,13 +48,13 @@ class ObservationRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('bird', $bird)
             ->orderBy('o.postedAt', 'DESC')
             ->getQuery();
-        $query->setFirstResult(($page-1) * $limit)
+        $query->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit);
 
         return new Paginator($query, true);
     }
 
-    public function findForUser(User $user)
+    public function findForValidate(User $user)
     {
         $query = $this->createQueryBuilder('o')
             ->where('o.user = :user')
@@ -63,4 +63,5 @@ class ObservationRepository extends \Doctrine\ORM\EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
 }

@@ -5,6 +5,7 @@ namespace ObservationBundle\EventListener;
 
 
 use Doctrine\ORM\EntityManager;
+use ObservationBundle\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserSubscriber implements EventSubscriberInterface
@@ -30,16 +31,20 @@ class UserSubscriber implements EventSubscriberInterface
     {
         $user = $event->getUser();
 
-        if ($user->getBirthDate() != null) {
-            $groupStar = $this->em->getRepository('ObservationBundle:GroupStar')->findOneBy(
-                array('entity' => self::BIRTH_DATE)
-            );
-            if (!$groupStar->getUsers()->contains($user)) {
-                $groupStar->getStars()->first()->addUser($user);
-                $this->em->persist($groupStar->getStars()->first());
-                $this->em->flush();
-            }
+        if ($user->getBirthDate() !== null) {
+            $this->addStars($user, self::BIRTH_DATE);
+        }
+    }
 
+    public function addStars(User $user, $entityName)
+    {
+        $groupStar = $this->em->getRepository('ObservationBundle:GroupStar')->findOneBy(
+            array('entity' => $entityName)
+        );
+        if (!$groupStar->getUsers()->contains($user)) {
+            $groupStar->getStars()->first()->addUser($user);
+            $this->em->persist($groupStar->getStars()->first());
+            $this->em->flush();
         }
     }
 
@@ -47,13 +52,8 @@ class UserSubscriber implements EventSubscriberInterface
     {
         $user = $event->getUser();
 
-        if($user->getAvatar() != null){
-            $groupStar = $this->em->getRepository('ObservationBundle:GroupStar')->findOneBy(array('entity' => self::AVATAR));
-            if (!$groupStar->getUsers()->contains($user)) {
-                $groupStar->getStars()->first()->addUser($user);
-                $this->em->persist($groupStar->getStars()->first());
-                $this->em->flush();
-            }
+        if ($user->getAvatar() !== null) {
+            $this->addStars($user, self::AVATAR);
         }
     }
 }

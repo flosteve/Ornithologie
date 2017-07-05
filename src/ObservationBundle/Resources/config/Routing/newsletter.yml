@@ -1,0 +1,23 @@
+newsletter_subscribed:
+  path: /subscribe
+  defaults:
+    _controller: ObservationBundle:Newsletter:subscribe
+  methods: [POST]
+
+newsletter_unscubscribe:
+  path: /unsubscribe/{email}
+  defaults:
+    _controller: ObservationBundle:Newsletter:unsubscribe
+  requirements:
+    -email: "[a-zA-Z0-9._%+-]+@[a-zA-z.-]+.[a-z]{2,4}"
+  methods: [GET, POST]
+
+newsletter_status:
+  path: /{email}/status
+  defaults:
+    _controller: ObservationBundle:Newsletter:status
+  requirements:
+    -email: "[a-zA-Z0-9._%+-]+@[a-zA-z.-]+.[a-z]{2,4}"
+  methods: [GET]
+
+

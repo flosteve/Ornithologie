@@ -1,9 +1,137 @@
+/* Suppression des marges negatifs sur les classes row de bootstrap*/
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/*
+Réglages généraux
+*/
+body {
+    font-family: ‘Roboto’, sans-serif;
+}
+
+#contentHome, #contentAdd, #contentEdit {
+
+    background: url('../images/Visuels/observation_background.jpg') no-repeat center;
+    width: 100%;
+    /* Qtyle pour que la photo s'adape à la hauteur du div*/
+    background-size: auto 100%;
+}
+
+h1 {
+    font-size: 36px;
+    color: #a1d0f3;
+
+}
+
+
+
+/*
+Page Observation
+ */
 #map {
     height: 400px;
     width: 100%;
 }
-     /*------------------ Styel pour les écans de largeur superieur à 992 px -------*/
-@media (min-width: 992px) {
+
+.center-80 {
+    width: 80%;
+    margin: auto;
+}
+
+.container {
+    width: 100%;
+    max-width: 1600px;
+    margin: auto;
+    padding: 0;
+}
+
+#formObs, #formEdit {
+
+    border: none;
+    background: none;
+}
+
+#flashMobile {
+    margin-top: 40px;
+}
+
+#add_observation_location_lieu {
+    z-index: 1;
+}
+
+#ui-datepicker-div {
+    z-index: 10;
+}
+
+#picBird {
+    padding-left: 0;
+}
+
+#picBird img {
+
+    margin-top: 10px;
+    margin-right: 10px;
+    min-height: 200px;
+    height: 200px;
+    width: 250px;
+    min-width: 250px;
+}
+
+/*
+Formatage input
+ */
+.form-control, #formObs > div > form > div:nth-child(4) > div > div > span > span.selection > span, #contentAdd > div:nth-child(2) > div > form > div:nth-child(4) > div > div > span > span.selection > span {
+    border-radius: 0;
+}
+
+/*
+Stylisation bouton Import Image
+ */
+
+.group-span-filestyle .btn-default {
+    /*background-color: #99d1c8;*/
+    /*background-image: none;*/
+    background: url('../images/icones/importPhoto_icon.png') no-repeat center;
+    text-shadow: none;
+    height: 100px;
+    margin-top: 10px;
+}
+
+#contentAdd > div:nth-child(2) > div > form > div:nth-child(6) > div > div > div.row > div:nth-child(2) > div > span > label {
+    background: url('../images/icones/photo_icon.png') no-repeat center;
+}
+
+.group-span-filestyle .buttonText {
+
+    color: grey;
+}
+
+/*
+Retour bas de page
+ */
+#retour {
+    height: 30px;
+    background-color: rgb(243, 243, 243);
+}
+
+a#retour, a#add-birds {
+    position: absolute;
+    bottom:0;
+    left: calc( 0px - ( 100% / 8 ));
+    right: calc( 0px - (100% / 8 ));
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #99d1c8;
+}
+
+/*------------------ Styel pour les écans de largeur superieur à 992 px -------*/
+@media (min-width: 993px) {
     /* Marge du body pour la navbar et utilisation de flex pour coller le footer en bas de page */
     body {
         margin: 0;
@@ -15,41 +143,48 @@
     /*Contenu de la page pour prendre le plus de place possible*/
     #content {
         flex: 1;
-        margin-bottom: 20px;
     }
 
-    /*style des liste oiseaux*/
-    .observation, .observation > ul {
-        min-height: 60px;
+    #content > .center-80 {
+        /* Hauteur minimum = hautreur fenetre - hauteur footer - hauteur navbar déplier*/
+        min-height: calc(100vh - 180px - 90px);
+        padding-top: 20px;
+        position: relative;
     }
 
-    /* Position du bouton up à 120px du haut*/
-    #up {
-        top: 120px;
-    }
-    .bird{
-        width: 47.5%;
-    }
+    #listing .row {
+        margin-left: 5px;
 
+    }
 
 }
 
 /* -------------------------------- Fin style écran petit ----------------------------------------*/
 /* -------------------------------- Ecran de moins de 992 px de large ----------------------------------------*/
 @media (max-width: 992px) {
+
     /* Marge speciale pour ne pas affiché sous la navbar */
     #view {
-        padding-bottom: 70px;
+        min-height: calc(100vh - 40px - 70px);
+        margin-top: 40px;
+        margin-bottom: 70px;
     }
 
-    /* position du bouton up à 20px du haut */
-    #up {
-        top: 20px;
+    #view > .center-90 {
+        position: relative;
+        min-height: calc(100vh - 40px - 70px);
+        height: 100%;
     }
+
+    #contentAdd {
+        background: none;
+        width: 90%;
+    }
+
 }
 
 .required:after {
-    content: '*';
+    content: ' *';
     color: #C82829;
 }
 
@@ -58,97 +193,19 @@
     height: 20px;
 }
 
-/*------------ Toggle switch --------------- */
-/* Le switch - box autour du slider*/
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 0;
-}
-
-/* On cache la checkbox HTML */
-.switch input {
-    display: none;
-}
-
-/*Le slider */
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #218BC3;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 15px;
-    width: 15px;
-    left: 5px;
-    bottom: 3px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-input:checked + .slider {
-    background-color: #2196F3;
-}
-
-input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-    -webkit-transform: translateX(15px);
-    -ms-transform: translateX(15px);
-    transform: translateX(15px);
-}
-
-/* Forme arroundi du slider */
-.slider.round {
-    border-radius: 20px;
-}
-
-.slider.round:before {
-    border-radius: 50%;
-}
-
-/*----------- Fin du toggle switch */
-
-/* Barre de séparation page de connection */
-#right {
-    border-style: solid;
-    border-color: #dddddd;
-    border-width: 0 0 0 2px;
-}
-
 /* Capital sur les lien de navigation dans le footer */
 .capital {
     text-transform: uppercase;
     font-size: small;
 }
 
-/* Style sur l'input de recherche des liste oiseaux */
-#search {
-    border: 0;
-    border-bottom: 2px solid cornflowerblue;
-}
-
-.center, .center > input, .center > i {
+/*------- Loader -----*/
+.content-loader {
+    width: 120px;
+    height: 120px;
     margin: auto;
 }
 
-/*------- Loader -----*/
 .loader {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3498db; /* Blue */
@@ -184,120 +241,87 @@ input:checked + .slider:before {
     right: 0;
 }
 
-/*
-    Zone sur les div des observations lors des paginations
-    - Affichage d'une main lors du survole
-    - hauteur à 100 px
-    - Hauteur de certains divs à 100px
-    - Affichage d'une bordure à droite sur certain contenue
-*/
-.observation {
-    cursor: pointer;
-    margin-bottom: 20px;
+.obtained {
+    border: 2px solid #916319;
 }
 
-.observation > ul {
-    min-height: 60px;
-}
-
-.observation small {
-    color: #dddddd;
-}
-
-.right-border {
-    border: 0;
-    border-right: 1px solid #dddddd;
-}
-
-
-#up {
-    z-index: 255;
-    display: none;
-    position: fixed;
-    right: 20px;
-}
-
-/** Affichage main pour les div oiseaux **/
-.bird {
-    cursor: pointer;
-    height: 100px;
-    padding: 0;
-    background-color: #FEFEE2;
-    margin-bottom: 10px;
-}
-
-/* Margin special pour les div liste des oiseaux marge soit à gauche soit à droite*/
-.left {
-    margin-right: 2.5%;
-}
-
-.right {
-    margin-left: 2.5%;
-}
-
-.star-modal{
-    min-height: 50vh;
-}
-
-.obtained{
-    border:2px solid #916319;
-}
-.no-obtained{
+.no-obtained {
     border: 2px solid #2f2f2f;
 }
-.star{
+
+.star {
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
-#content_avatar{
-    width: 200px;
-    height: 200px;
-    margin: auto;
+#birds .col-sm-4 {
+    padding: 0;
 }
 
-.img-responsive{
-    width: 200px;
-    height: 200px;
-}
-#edit_avatar{
+#edit_avatar {
     border-radius: 50%;
     position: relative;
     bottom: 40px;
     left: 160px;
 }
+
 /*--- marging ----*/
-.marge-top{
+.marge-top {
     margin-top: 20px;
 }
 
-/*---- Couleur Background -----*/
-.fond-bleu-menu-2{
-    background-color: #dbefed;
-}
-
-.fond-bleu-titre{
-    background-color: #a1d0f3;
-}
-.count{
-    height: 25vh;
+/* Les boutons des form sont toutes largeur, sans arrondi et de couleur blanche*/
+.btn {
+    border-radius: 0;
+    width: 100%;
     color: white;
 }
-.count>div{
-    height: calc(25vh / 2);
-    line-height: 20px;
-    padding-top: calc(((25vh / 2) - 20px)/2);
-    text-transform: uppercase;
+
+/*
+Boutons text editor
+ */
+
+.note-btn {
+    color: black;
+    width: 40px;
 }
 
-
-
-
-.group-star{
-    background-color: #565656;
-    border-radius: 50%;
-    border: 1px solid skyblue;
+.btn-nao > img {
+    height: 20px;
 }
-#stars{
-    display: none;
+
+/*Couleur verte sur les bouton */
+.btn-nao {
+    background-color: #99d1c8;
+}
+
+.btn-nao-2 {
+    background-color: #8dd4e8;
+}
+
+.btn-form {
+    max-width: 100px;
+}
+
+/*Background gris*/
+.grey {
+    background-color: #fbfbfb;
+}
+
+.center-90 {
+    width: 90%;
+    margin: auto;
+}
+
+/* Style bloquer la largeur des boutons */
+.center-button {
+    width: 120px;
+    margin: auto;
+}
+
+/* Style for flash message */
+.alert {
+    border-radius: 0;
+    width: 64%;
+    margin: 10px auto;
 }

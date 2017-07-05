@@ -208,25 +208,15 @@ class GroupStar
 
     public function getHighest(User $user)
     {
-//        foreach ($this->stars as $star)
-//            var_dump($star->getUsers());
-//        exit;
         // Cette fonction permet de retourné la derniere médaile du groupe déverouilllé par le visiteur
         // On s'assure qu'il soit déjà dans le group
-        if (!$this->users->contains($user)) {
-            return null;
+        if ($this->stars->count() == 1) {
+            return $this->stars->first();
         }
         foreach ($this->stars as $star){
             if($star->getUsers()->contains($user)){
-//                var_dump($star);
-//                exit;
                 return $star;
             }
         }
     }
-//
-//    protected function trie($objet1, $objet2)
-//    {
-//        return ($objet1->getOrder() < $objet2->getOrder()) ? -1 : 1);
-//    }
 }

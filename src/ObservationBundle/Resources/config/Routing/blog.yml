@@ -1,0 +1,22 @@
+billet_create:
+  path: /billet/create
+  defaults:
+    _controller: ObservationBundle:Blog:create
+  methods:  [GET, POST]
+
+
+billet_edit:
+  path: /billet/{id}/edit
+  defaults:
+    _controller: ObservationBundle:Blog:edit
+  requirements:
+    -page: blog
+  methods: [GET, POST]
+
+blog_view:
+   path: /
+   defaults:
+     _controller: ObservationBundle:Blog:view
+   requirements:
+     -page: blog
+   methods: [GET]

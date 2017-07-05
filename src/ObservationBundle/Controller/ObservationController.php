@@ -8,9 +8,11 @@ use ObservationBundle\Entity\Bird;
 use ObservationBundle\Entity\Observation;
 use ObservationBundle\Entity\Picture;
 use ObservationBundle\Event\ObservationEvent;
-use ObservationBundle\Form\Observation\AddObservationType;
+use ObservationBundle\Form\Type\Observation\AddObservationType;
+use ObservationBundle\Form\Type\Picture\PictureType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -92,16 +94,9 @@ class ObservationController extends Controller
      */
     public function viewAction(Observation $observation, Request $request)
     {
-        $device = $this->get('mobile_detect.mobile_detector');
-        if($device->isMobile()){
-            return $this->render('@Observation/Observation/Mobile/detail.html.twig', array(
+            return $this->render('@Observation/Observation/detail.html.twig', array(
                 'observation' => $observation
             ));
-        }else{
-            return $this->render('@Observation/Observation/Desktop/detail.html.twig', array(
-                'observation' => $observation
-            ));
-        }
     }
 
     /**
@@ -113,16 +108,12 @@ class ObservationController extends Controller
     {
 
         $observation = new Observation();
+        $observation->setUser($this->getUser());
         $session = new Session();
         $session->set('getBird', false);
         $em = $this->getDoctrine()->getManager();
-        // On verifie si le visiteur est un naturaliste
-        if($this->getUser()->hasRole('ROLE_NATURALISTE')){
-            // Dans ce cas, l'observation est automatiquement validé par lui-même
-            $observation->setValidated(true)
-                ->setValidatedAt(new \DateTime())
-                ->setValidatedBy($this->getUser());
-        }
+        $device = $this->get('mobile_detect.mobile_detector');
+
         $form = $this->createForm(AddObservationType::class, $observation);
 
         $form->handleRequest($request);
@@ -131,30 +122,30 @@ class ObservationController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             // Recuperation des photos uploader
             $files = $form->get('files')->getData();
-            // On boucle sur les photos pour les ajoutés à l'observation
+
             foreach ($files as $file) {
                 $picture = new Picture();
                 $picture->setFile($file)
                     ->setObservation($observation);
-                // Si l'observation est dejà validé, on ajoute l'oiseau à la photo.
-                if($observation->getValidated() == true){
-                    $picture->setBird($observation->getBird());
-                }
+                $observation->addPicture($picture);
+
+                $em->persist($picture);
             }
-            $observation->setUser($this->getUser());
+            // Appel du listener pour naturaliste
+            $obsListener = $this->get('observation.event_listener');
+            $obsListener->obsOfNaturaliste($observation);
 
             $em->persist($observation);
             $em->flush();
 
             $this->addFlash(
-                'notice',
-                'Votre observation a été envoyé! En attente de validation'
+                'success',
+                'Votre observation a été envoyée! En attente de validation'
             );
             return $this->redirectToRoute('observation_add');
         }
 
-        $device = $this->get('mobile_detect.mobile_detector');
-        if($device->isMobile()){
+        if($device->isMobile() || $device->isTablet()){
             return $this->render(
             'ObservationBundle:Observation:Mobile/add.html.twig', array(
             'form' => $form->createView()));
@@ -171,22 +162,16 @@ class ObservationController extends Controller
     public function validateAction(Observation $observation)
     {
         // Action simple de mise à jour de l'entity sans vue renvoyant à la page de l'observation
-        // on passe l'observation en validé
-        $observation->setValidated(true)
-            ->setValidatedAt(new \DateTime())
-            ->setValidatedBy($this->getUser());
-        foreach ($observation->getPictures() as $picture)
-        {
-            $picture->setBird($observation->getBird());
+        // on s'assure que l'observation n'est pas déjà valider
+        if($observation->getValidated() === false ){
+            $obsListener = $this->get('observation.event_listener');
+            $obsListener->validate($observation, $this->getUser());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($observation);
+            $em->flush();
+            $this->get('event_dispatcher')->dispatch('observation.captured', new ObservationEvent($observation));
+            $this->addFlash('info', "L'observation a bien été enregistrée !");
         }
-        $em = $this->getDoctrine()->getManager();
-
-        $em->persist($observation);
-        $em->flush();
-        $this->get('event_dispatcher')->dispatch('observation.captured', new ObservationEvent($observation));
-
-        $this->addFlash('info', "L'observation a bien été enregistrer !");
-
         return $this->redirectToRoute('observation_view', array('id' => $observation->getId()));
 
     }
@@ -197,20 +182,38 @@ class ObservationController extends Controller
     public function unvalideAction(Observation $observation)
     {
         // Action simple de mise à jour de l'entity sans vue renvoyant à la page de l'observation
-        // On va retirer l'oiseau des photos de l'observation
-        foreach ($observation->getPictures() as $picture) {
-            $picture->setBird(null);
+        // On vérifie si l'observation est validé
+
+        if ($observation->getValidated() === true){
+            $obsListener = $this->get('observation.event_listener');
+            $obsListener->unvalidate($observation);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($observation);
+            $em->flush();
+
+            $this->addFlash('success', 'L\'observation a bien été invalidée');
         }
-        $observation->setValidated(false)
-        ->setValidatedBy(null)
-        ->setValidatedAt(null);
-        $em = $this->getDoctrine()->getManager();
-
-        $em->persist($observation);
-        $em->flush();
-
-        $this->addFlash('success', 'Lobservation a bien été invalidé');
         return $this->redirectToRoute('observation_view', array('id' => $observation->getId()));
 
+    }
+
+    /**
+     * Action pour générer les points de localisation d'un oiseau
+     * @param Bird $bird
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function locationsAction(Bird $bird, Request $request)
+    {
+        // On s'assure d'être en requete AJAX
+        if ($request->isXmlHttpRequest()) {
+
+            $em = $this->getDoctrine()->getManager();
+            $locations = $em->getRepository('ObservationBundle:Location')->findBirdLocations($bird);
+
+            $response = new JsonResponse($locations);
+
+
+            return $response;
+        }
     }
 }

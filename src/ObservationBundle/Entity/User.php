@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="ObservationBundle\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="L'email est déjà utilisé")
  * @UniqueEntity(fields="username", message="Le pseudo est déjà utilisé")
+ * @ORM\HasLifecycleCallbacks()
  */
 
 class User implements AdvancedUserInterface, \Serializable
@@ -80,15 +81,9 @@ class User implements AdvancedUserInterface, \Serializable
     protected $roles;
 
     /**
-     * @ORM\Column(name="token", type="string", nullable=true)
+     * @ORM\OneToOne(targetEntity="ObservationBundle\Entity\RequestPassword", inversedBy="user", cascade={"persist"})
      */
-    protected $token;
-
-    /**
-     * @ORM\Column(name="token_date", type="datetime", nullable=true)
-     */
-    protected $dateToken;
-
+    protected $requestPassword;
     /**
      * @ORM\ManyToMany(targetEntity="ObservationBundle\Entity\Star", mappedBy="users")
      * @ORM\JoinColumn(nullable=false)
@@ -104,9 +99,24 @@ class User implements AdvancedUserInterface, \Serializable
 
 
     /**
-     * @ORM\OneToOne(targetEntity="ObservationBundle\Entity\Picture", inversedBy="user")
+     * @ORM\OneToOne(targetEntity="ObservationBundle\Entity\Picture", inversedBy="user", cascade={"persist"})
      */
     protected $avatar;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    protected $newsletter = true ;
+
+    /**
+     * @ORM\OneToOne(targetEntity="ObservationBundle\Entity\RequestOpen", inversedBy="user", cascade={"persist"})
+     */
+    protected $requestOpen;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $sleeping = false;
 
     /**
      * Constructor
@@ -162,18 +172,6 @@ class User implements AdvancedUserInterface, \Serializable
     {
         $this->lastname = $lastname;
 
-        return $this;
-    }
-
-    public function addRole($role)
-    {
-        $role = strtoupper($role);
-        if($role == static::ROLE_DEFAULT){
-            return $this;
-        }
-        if(!in_array($role, $this->roles, true)){
-            $this->roles[] = $role;
-        }
         return $this;
     }
 
@@ -313,7 +311,6 @@ class User implements AdvancedUserInterface, \Serializable
 
     public function eraseCredentials()
     {
-        // TODO: Implement eraseCredentials() method.
     }
 
     public function getSalt()
@@ -370,7 +367,7 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @return boolean
      */
-    public function getIsActive()
+    public function getActive()
     {
         return $this->isActive;
     }
@@ -382,7 +379,7 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @return User
      */
-    public function setIsActive($isActive)
+    public function setActive($isActive)
     {
         $this->isActive = $isActive;
 
@@ -409,54 +406,6 @@ class User implements AdvancedUserInterface, \Serializable
     public function setBirthDate($birthDate)
     {
         $this->birthDate = $birthDate;
-
-        return $this;
-    }
-
-    /**
-     * Get token
-     *
-     * @return string
-     */
-    public function getToken()
-    {
-        return $this->token;
-    }
-
-    /**
-     * Set token
-     *
-     * @param string $token
-     *
-     * @return User
-     */
-    public function setToken($token)
-    {
-        $this->token = $token;
-
-        return $this;
-    }
-
-    /**
-     * Get dateToken
-     *
-     * @return \DateTime
-     */
-    public function getDateToken()
-    {
-        return $this->dateToken;
-    }
-
-    /**
-     * Set dateToken
-     *
-     * @param \DateTime $dateToken
-     *
-     * @return User
-     */
-    public function setDateToken($dateToken)
-    {
-        $this->dateToken = $dateToken;
 
         return $this;
     }
@@ -551,5 +500,159 @@ class User implements AdvancedUserInterface, \Serializable
         $this->avatar = $avatar;
 
         return $this;
+    }
+
+    /**
+     * Get newsletter
+     *
+     * @return boolean
+     */
+    public function getNewsletter()
+    {
+        return $this->newsletter;
+    }
+
+    /**
+     * Set newsletter
+     *
+     * @param boolean $newsletter
+     *
+     * @return User
+     */
+    public function setNewsletter($newsletter)
+    {
+        $this->newsletter = $newsletter;
+
+        return $this;
+    }
+
+    /**
+     * Get requestPassword
+     *
+     * @return \ObservationBundle\Entity\RequestPassword
+     */
+    public function getRequestPassword()
+    {
+        return $this->requestPassword;
+    }
+
+    /**
+     * Set requestPassword
+     *
+     * @param \ObservationBundle\Entity\RequestPassword $requestPassword
+     *
+     * @return User
+     */
+    public function setRequestPassword(\ObservationBundle\Entity\RequestPassword $requestPassword = null)
+    {
+        $this->requestPassword = $requestPassword;
+
+        return $this;
+    }
+
+    /**
+     * Get requestOpen
+     *
+     * @return \ObservationBundle\Entity\RequestOpen
+     */
+    public function getRequestOpen()
+    {
+        return $this->requestOpen;
+    }
+
+    /**
+     * Set requestOpen
+     *
+     * @param \ObservationBundle\Entity\RequestOpen $requestOpen
+     *
+     * @return User
+     */
+    public function setRequestOpen(\ObservationBundle\Entity\RequestOpen $requestOpen = null)
+    {
+        $this->requestOpen = $requestOpen;
+
+        return $this;
+    }
+
+    /**
+     * Get sleeping
+     *
+     * @return boolean
+     */
+    public function getSleeping()
+    {
+        return $this->sleeping;
+    }
+
+    /**
+     * Set sleeping
+     *
+     * @param boolean $sleeping
+     *
+     * @return User
+     */
+    public function setSleeping($sleeping)
+    {
+        $this->sleeping = $sleeping;
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function sortRoles()
+    {
+        if (in_array('ROLE_ADMIN', $this->roles) && !in_array('ROLE_NATURALISTE', $this->roles)) {
+            $this->addRole('ROLE_NATURALISTE');
+        }
+        if (in_array('ROLE_NATURALISTE', $this->roles) && !in_array('ROLE_OBS', $this->roles)) {
+            $this->addRole('ROLE_OBS');
+        }
+    }
+
+    public function addRole($role)
+    {
+        $role = strtoupper($role);
+        if ($role == static::ROLE_DEFAULT) {
+            return $this;
+        }
+        if (!in_array($role, $this->roles, true)) {
+            // On s'assure que les admins, on aussi le role naturaliste
+            if ($role === 'ROLE_ADMIN' && !in_array('ROLE_NATURALISTE', $this->roles, true)) {
+                $this->addRole('ROLE_NATURALISTE');
+            }
+            // On s'assure que les naturaliste, on aussi le role obs
+            if ($role === 'ROLE_NATURALISTE' && !in_array('ROLE_OBS', $this->roles, true)) {
+                $this->addRole('ROLE_OBS');
+            }
+            $this->roles[] = $role;
+        }
+        return $this;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return User
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 }

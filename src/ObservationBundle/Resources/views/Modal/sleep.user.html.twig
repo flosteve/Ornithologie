@@ -1,0 +1,20 @@
+<div id="sleep_user" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+                <h4 class="text-center">Mettre en sommeil votre compte</h4>
+                <p class="explain">
+                    Vous êtes sur le point de mettre votre compte en sommeil. <br>
+                    <small>Vos données ne seront pas éffacées et vous pourrez réctivé votre compte à tous moments.
+                    </small>
+                </p>
+                <p class="confirm text-center">
+                    Etes vous sur ?
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                    <a href="{{ path('user_sleep') }}" class="btn btn-primary">Oui</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

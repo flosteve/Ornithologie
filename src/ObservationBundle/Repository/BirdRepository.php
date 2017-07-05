@@ -16,9 +16,10 @@ class BirdRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Fonction pour paginer la liste d'oiseaux
      */
-    public function getPage($page, $numbers, $search = null)
+    public function getPage($page, $numbers, $search = null, $couleurBec = null, $couleurPatte = null, $couleurPlumage = null, $typeBec = null)
     {
         $query = $this->createQueryBuilder('b');
+        // On regarde s'il s'agit d'une recherche
         if ($search !== null) {
             $query
                 ->orWhere('b.lbNom LIKE :regex')
@@ -26,6 +27,24 @@ class BirdRepository extends \Doctrine\ORM\EntityRepository
                 ->orWhere("b.nomVern LIKE :regex2")
                 ->setParameter('regex2', "%$search%");
         }
+        // On va vérifie les filtres sur bec pattes et bec
+        if($couleurBec !== null){
+            $query->andWhere('b.bec = :couleurBec')
+                ->setParameter('couleurBec', $couleurBec);
+        }
+        if($couleurPatte !== null){
+            $query->andWhere('b.patte = :couleurPatte')
+                ->setParameter('couleurPatte', $couleurPatte);
+        }
+        if($couleurPlumage !== null){
+            $query->andWhere('b.plumage = :couleurPlumage')
+                ->setParameter('couleurPlumage', $couleurPlumage);
+        }
+        if($typeBec !== null){
+            $query->andWhere('b.typeBec = :typeBec')
+                ->setParameter('typeBec', $typeBec);
+        }
+
         $query->orderBy('b.nomVern', 'ASC')
             ->addOrderBy('b.lbNom', 'ASC')->getQuery();
 
@@ -34,7 +53,7 @@ class BirdRepository extends \Doctrine\ORM\EntityRepository
         return new Paginator($query, true);
     }
 
-    public function findForValide(User $user)
+    public function findForValidate(User $user)
     {
         $query = $this->createQueryBuilder('b')
             ->innerJoin('b.observations', 'o')
@@ -43,5 +62,16 @@ class BirdRepository extends \Doctrine\ORM\EntityRepository
             ->andWhere('o.validated = true');
 
         return $query->getQuery()->getResult();
+    }
+
+    public function findAllSort()
+    {
+       $querybuilder = $this->_em->createQueryBuilder();
+       $query = $querybuilder->select('b, COALESCE(b.nomVern, b.lbNom) as columnOrder')
+           ->from('ObservationBundle:Bird', 'b')
+           ->addOrderBy('columnOrder', 'ASC')
+           ->getQuery();
+//       $query = $this->_em->createQuery('SELECT b, COALESCE( b.nomVern, b.lbNom) AS tri FROM ObservationBundle:Bird b ORDER BY tri ');
+       return $query->getResult();
     }
 }
