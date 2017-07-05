@@ -135,9 +135,6 @@ class ObservationController extends Controller
             $obsListener = $this->get('observation.event_listener');
             $obsListener->obsOfNaturaliste($observation);
 
-            $observation->setUser($this->getUser());
-
-
             $em->persist($observation);
             $em->flush();
 
@@ -170,7 +167,6 @@ class ObservationController extends Controller
             $obsListener = $this->get('observation.event_listener');
             $obsListener->validate($observation, $this->getUser());
             $em = $this->getDoctrine()->getManager();
-
             $em->persist($observation);
             $em->flush();
             $this->get('event_dispatcher')->dispatch('observation.captured', new ObservationEvent($observation));
